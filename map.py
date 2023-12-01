@@ -13,6 +13,7 @@ from kivy.uix.button import Button
 from kivy.graphics import Color, Ellipse, Line
 from kivy.config import Config
 from kivy.properties import NumericProperty, ReferenceListProperty, ObjectProperty
+from kivy.core.window import Window
 from kivy.vector import Vector
 from kivy.clock import Clock
 from kivy.core.image import Image as CoreImage
@@ -24,9 +25,11 @@ from ai import Dqn
 
 # Adding this line if we don't want the right click to put a red point
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
-Config.set('graphics', 'resizable', False)
-Config.set('graphics', 'width', '1429')
-Config.set('graphics', 'height', '660')
+Config.set('graphics', 'resizable', True)
+# Config.set('graphics', 'width', '1429')
+Config.set('graphics', 'width', '1207')
+# Config.set('graphics', 'height', '660')
+Config.set('graphics', 'height', '696')
 
 # Introducing last_x and last_y, used to keep the last point in memory when we draw the sand on the map
 last_x = 0
@@ -39,7 +42,7 @@ brain = Dqn(5,3,0.9)
 action2rotation = [0,5,-5]
 last_reward = 0
 scores = []
-im = CoreImage("./images/mask_ours.jpg")
+im = CoreImage("./images/IMG_3641.png")
 
 # textureMask = CoreImage(source="./kivytest/simplemask1.png")
 
@@ -52,9 +55,9 @@ def init():
     global goal_y
     global first_update
     sand = np.zeros((longueur,largeur))
-    img = PILImage.open("./images/mask.png").convert('L')
+    img = PILImage.open("./images/IMG_3641_rot.png").convert('L')
     sand = np.asarray(img)/255
-    goal_x = 1420
+    goal_x = 1020
     goal_y = 622
     first_update = False
     global swap
@@ -137,8 +140,8 @@ class Game(Widget):
         global swap
         
 
-        longueur = self.width
-        largeur = self.height
+        longueur = int(self.width)
+        largeur = int(self.height)
         if first_update:
             init()
 
@@ -184,12 +187,12 @@ class Game(Widget):
 
         if distance < 25:
             if swap == 1:
-                goal_x = 1420
+                goal_x = 1220
                 goal_y = 622
                 swap = 0
             else:
-                goal_x = 9
-                goal_y = 85
+                goal_x = 500
+                goal_y = 100
                 swap = 1
         last_distance = distance
 
@@ -235,6 +238,8 @@ class CarApp(App):
         parent = Game()
         parent.serve_car()
         Clock.schedule_interval(parent.update, 1.0/60.0)
+        Window.size = ( 1807, 896)
+
         self.painter = MyPaintWidget()
         clearbtn = Button(text = 'clear')
         savebtn = Button(text = 'save', pos = (parent.width, 0))
